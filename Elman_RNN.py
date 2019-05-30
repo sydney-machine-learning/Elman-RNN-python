@@ -307,15 +307,26 @@ def loadersunspot(fname):
         del y[0]
     return x,y
 
-
+def shuffledata(x,y):
+    a=[]
+    for i in range(0,len(x)):
+        a.append(i)
+    random.shuffle(a)
+    x1 = []
+    y1=[]
+    for item in a:
+        x1.append(x[item])
+        y1.append(y[item])
+    return x1,y1
 
 def main():
 
 
         #for mackey
-        fname = "train_embed.txt"
+        fname = "RT1.txt"
         x,y = data_loader(fname)
         #print_data(x,y)
+        x,y = shuffledata(x,y)
         train_x= x[:int(len(x)*0.8)]
         test_x=x[int(len(x)*0.8):]
         train_y= y[:int(len(y)*0.8)]
@@ -335,9 +346,11 @@ def main():
         # train_y= y[:int(len(y)*0.8)]
         # test_y=y[int(len(y)*0.8):]
 
-        Hidden = 5
+        Hidden = 10
         
-
+        # is it classification, then update below to 1
+        classification = 1
+        
 
         #print('printed data. now we use RNN for training ...')
         Topo = [Input, Hidden, Output]
@@ -345,7 +358,7 @@ def main():
         Epoch=300
         MaxRun = Epoch # number of experimental runs
 
-        learnRate = 0.01
+        learnRate = 0.05
         start_time=time.time()
         rnn_net = Network(learnRate,Topo,train_x,train_y,test_x,test_y)        
         trainErr=[] # storing the error for plotting
@@ -364,7 +377,30 @@ def main():
             print(' Time:',time.time()-start_time)
             trainErr.append(err_trainmse)
             testErr.append(err_testmse)
-        
+
+            if classification == 1:
+                count_train=0
+                count_test=0
+                flag1=0
+                flag2=0
+                for i in range(0,len(trainfx)):
+                    flag1=0
+                    for j in range(0,len(trainfx[i])):
+                        trainfx[i][j] = 1 if trainfx[i][j]>0.5 else 0
+                        if trainfx[i][j] != train_y[i][j]:
+                            flag1=1
+                    if flag1 == 0:
+                        count_train += 1
+                for i in range(0,len(testfx)):
+                    flag2=0
+                    for j in range(0,len(testfx[i])):
+                        testfx[i][j] = 1 if testfx[i][j] > 0.5 else 0
+                        if testfx[i][j] != test_y[i][j]:
+                            flag2=1
+                    if flag2 == 0:
+                        count_test += 1
+                print(count_train * 100 / len(trainfx),' Train ', count_test * 100 / len(testfx), ' Test')
+
         # to plot the error
         plt.figure()
         plt.plot(np.array(trainErr), label = 'train')

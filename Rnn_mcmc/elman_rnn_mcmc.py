@@ -389,7 +389,7 @@ class MCMC:
 
             #mh_prob = min(1, math.exp(diff_likelihood + diff_priorliklihood))
             mh_prob = min(0, (diff_likelihood + diff_priorliklihood))
-            mh_prob = math.exp((diff_likelihood + diff_priorliklihood))
+            mh_prob = math.exp(mh_prob)
             u = random.uniform(0, 1)
 
             if u < mh_prob:
@@ -449,8 +449,8 @@ def main():
 
 
         #for mackey
-        fname = "train_embed.txt"
-        x,y = data_loader(fname)
+        fname = "trainsunspot.txt"
+        x,y = loadersunspot(fname)
         #print_data(x,y)
         x,y = shuffledata(x,y)
         train_x= x[:int(len(x)*0.8)]

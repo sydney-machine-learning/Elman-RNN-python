@@ -3,6 +3,13 @@
 
 Elman-RNN in Python
 
+This is made from scratch using only numpy package and no other.
+
+
+Follow to https://github.com/sydney-machine-learning/BayesianRNNs-paralleltemp for Bayesian NN using PyTorch
+Feed Forward NN and RNN, and I hope to do GRU and LSTM too in some days.
+
+
 Description:
 
     Runs perfectly and output plots of training error and test error over the number of epochs.
